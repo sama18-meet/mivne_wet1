@@ -239,12 +239,14 @@ typename AVL<K,T>::Node* AVL<K,T>::remove_from_subtree(Node* root, K key) {
     return root;
 }
 
-template <class K, class T, class function>
+template <class K, class T>
+template <class function>
 void AVL<K, T>::apply_inorder(function func) {
     apply_inorder_internal(root, func);
 }
 
-template <class K, class T, class function>
+template <class K, class T>
+template <class function>
 void AVL<K, T>::apply_inorder_internal(Node* root, function func) {
     if (root == nullptr) {
         return;
