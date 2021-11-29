@@ -18,7 +18,6 @@ private:
                 key(key), data(data), left(nullptr), right(nullptr), height(0) {};
         ~Node() = default;
         Node& operator=(const Node&) = default;
-        void update(K new_key, T new_data) {key = new_key; data = new_data;};
     };
     Node* root;
     int size;
@@ -37,15 +36,11 @@ private:
     Node* RR(Node* C);
     Node* remove_from_subtree(Node* root, K key);
     template <class function, class param>
-    void apply_inorder_internal(Node* root, function func, param p, int done_nodes);
-    template <class function, class param>
-    void apply_inorder_on_node_internal(Node* root, function func, param p, int done_nodes);
+    void apply_inorder_internal(Node* root, function func, param p, int done_nodes, bool on_key);
     static void mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* keys2, T* data, K* keysMerged, T* dataMerged);
     static AVL<K,T> buildAVLInternal(int size, K* keyArr, T* dataArr);
     template <class arrType>
-    static void insertDataInArray(arrType* arr, T element, int index);
-    template <class arrType>
-    static void insertKeyInArray(arrType* arr, Node* node, int index);
+    static void insertInArray(arrType* arr, arrType element, int index);
     static AVL<K,T> buildAVLFromArray(int size, K* keyArr, T* dataArr);
 
 public:
@@ -58,7 +53,7 @@ public:
     void insert(K key, T data);
     void remove(K key);
     template <class function, class param>
-    void apply_inorder(function func, param p, bool on_node=false);
+    void apply_inorder(function func, param p, bool on_key=false);
     int getSize() const;
     static AVL<K,T> mergeAVLs(AVL<K,T>& avl1, AVL<K,T>& avl2);
 
@@ -266,37 +261,25 @@ typename AVL<K,T>::Node* AVL<K,T>::remove_from_subtree(Node* root, K key) {
 
 template <class K, class T>
 template <class function, class param>
-void AVL<K, T>::apply_inorder(function func, param p, bool on_node) {
-    if (on_node) {
-        apply_inorder_on_node_internal(root, func, p, 0);
+void AVL<K, T>::apply_inorder(function func, param p, bool on_key) {
+    apply_inorder_internal(root, func, p, 0, on_key);
+}
+
+template <class K, class T>
+template <class function, class param>
+void AVL<K, T>::apply_inorder_internal(Node* root, function func, param p, int done_nodes, bool on_key) {
+    if (root == nullptr) {
+        return;
+    }
+    apply_inorder_internal(root->left, func, done_nodes, on_key);
+    if (on_key) {
+        func(p, root->key, done_nodes);
     }
     else {
-        apply_inorder_internal(root, func, p, 0);
+        func(p, root->data, done_nodes);
     }
-}
-
-template <class K, class T>
-template <class function, class param>
-void AVL<K, T>::apply_inorder_internal(Node* root, function func, param p, int done_nodes) {
-    if (root == nullptr) {
-        return;
-    }
-    apply_inorder_internal(root->left, func, done_nodes);
-    func(p, root->data, done_nodes);
     done_nodes++;
-    apply_inorder_internal(root->right, func, done_nodes);
-}
-
-template <class K, class T>
-template <class function, class param>
-void AVL<K, T>::apply_inorder_on_node_internal(Node* root, function func, param p, int done_nodes) {
-    if (root == nullptr) {
-        return;
-    }
-    apply_inorder_internal(root->left, func, done_nodes);
-    func(p, root, done_nodes);
-    done_nodes++;
-    apply_inorder_internal(root->right, func, done_nodes);
+    apply_inorder_internal(root->right, func, done_nodes, on_key);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,7 +319,7 @@ AVL<K,T> AVL<K,T>::buildAVLInternal(int size, K* keyArr, T* dataArr) {
     T* rightDataArr = dataArr+left_size + 1;
     K currentKey = keyArr[left_size];
     T currentData = dataArr[left_size];
-    Node n = Node(K(), T()); // this assumes a default constructor for both T and K
+    Node n = Node(currentKey, currentData); // this assumes a default constructor for both T and K
     n->left = buildAVLInternal(left_size, leftKeyArr, leftDataArr);
     n->right = buildAVLInternal(right_size, rightKeyArr, rightDataArr);
     n->height = max(n->left->height, n->right->height) + 1;
@@ -355,14 +338,8 @@ int AVL<K,T>::getSize() const {
 
 template <class K, class T>
 template <class arrType>
-void AVL<K,T>::insertDataInArray(arrType* arr, T element, int index) {
+void AVL<K,T>::insertInArray(arrType* arr, arrType element, int index) {
     arr[index] = element;
-}
-
-template <class K, class T>
-template <class arrType>
-void AVL<K,T>::insertKeyInArray(arrType* arr, Node* node, int index) {
-    arr[index] = node->key;
 }
 
 template <class K, class T>
@@ -385,17 +362,18 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
 
 
 template <class K, class T>
+// notice that this method does not delete the two old avls!
 AVL<K,T> AVL<K,T>::mergeAVLs(AVL<K,T>& avl1, AVL<K,T>& avl2) {
     int n1 = avl1.getSize();
     int n2 = avl2.getSize();
     T* dataArray1 = new T[n1];
     T* dataArray2 = new T[n2];
-    avl1.apply_inorder(insertDataInArray, dataArray1, true);
-    avl2.apply_inorder(insertDataInArray, dataArray2, true);
+    avl1.apply_inorder(insertInArray<T>, dataArray1, true);
+    avl2.apply_inorder(insertInArray<T>, dataArray2, true);
     K* keyArray1 = new K[n1];
     K* keyArray2 = new K[n2];
-    avl1.apply_inorder(insertKeyInArray, keyArray1, true);
-    avl2.apply_inorder(insertKeyInArray, keyArray2, true);
+    avl1.apply_inorder(insertInArray<K>, keyArray1, true);
+    avl2.apply_inorder(insertInArray<K>, keyArray2, true);
     T* dataMerged = new T[n1+ n2];
     K* keysMerged = new K[n1+n2];
     mergeSortedArrays(n1, n2, keyArray1, dataArray1, keyArray2, dataArray2, keysMerged, dataMerged);
