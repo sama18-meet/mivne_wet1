@@ -89,7 +89,7 @@ int AVL<K,T>::get_bf(Node* root) {
     if (root == nullptr) {
         return 0;
     }
-    return height(root->left) - height(root->right);
+    return get_height(root->left) - get_height(root->right);
 }
 
 
@@ -104,7 +104,7 @@ typename AVL<K,T>::Node* AVL<K,T>::rollRight(Node* B) {
     B->left = A->right;
     A->right = B;
     A->height = get_height(A);
-    B->height = het_height(B);
+    B->height = get_height(B);
     return A;
 }
 
@@ -114,7 +114,7 @@ typename AVL<K,T>::Node* AVL<K,T>::rollLeft(Node* A) {
     A->right = B->left;
     B->left = A;
     A->height = get_height(A);
-    B->height = het_height(B);
+    B->height = get_height(B);
     return B;
 }
 
@@ -176,7 +176,8 @@ template <class K, class T>
 typename AVL<K,T>::Node* AVL<K,T>::insert_in_subtree(Node* root, K key, T data) {
     if (root == nullptr) {
         this->size += 1;
-        return Node(key, data);
+        Node* n = new Node(key, data);
+        return n;
     }
     if (key == root->key) {
         root->data = data;
