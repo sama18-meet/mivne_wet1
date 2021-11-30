@@ -203,8 +203,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollRight(Node* B) {
     Node* A = B->left;
     B->left = A->right;
     A->right = B;
-    A->height = get_height(A);
-    B->height = get_height(B);
+    //A->height = get_height(A); //not needed
+    B->height = get_height(B) - 2; //decreases by 2 after roll
     return A;
 }
 
@@ -213,8 +213,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollLeft(Node* A) {
     Node* B = A->right;
     A->right = B->left;
     B->left = A;
-    A->height = get_height(A);
-    B->height = get_height(B);
+    A->height = get_height(A) - 2; //decreases by 2 after roll
+    //B->height = get_height(B); //not needed
     return B;
 }
 
@@ -512,7 +512,7 @@ void AVL<K,T>::insertInArray(arrType* arr, arrType element, int index) {
 
 template <class K, class T>
 void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* keys2, T* data2,
-                                K* keysMerged, T* dataMerged) {
+                                 K* keysMerged, T* dataMerged) {
     int curr1 = 0;
     int curr2 = 0;
     int currI = 0;
