@@ -46,6 +46,8 @@ private:
     template <class arrType>
     static void insertInArray(arrType* arr, arrType element, int index);
     void deleteSubtree(Node*);
+    void printBT(const std::string& prefix, const Node* node, bool isLeft);
+
 
 public:
     Node* get_smallest_bigger_son(Node* root); //return to private when done debugging
@@ -75,6 +77,9 @@ public:
     template <class function, class param>
     void apply_inorder(function func, param p);
     int getSize() const;
+
+    void printBT();
+
 
 };
 
@@ -543,5 +548,31 @@ AVL<K,T>::AVL(const AVL<K,T>& avl1, const AVL<K,T>& avl2) {
     size = n1+n2;
     root = buildAVLInternalFromArr(size, keysMerged, dataMerged);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+template <class K, class T>
+void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
+{
+    if( node != nullptr )
+    {
+        std::cout << prefix;
+
+        std::cout << (isLeft ? "├──" : "└──" );
+
+        // print the value of the node
+        std::cout << node->data << std::endl;
+
+        // enter the next tree level - left and right branch
+        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+    }
+}
+
+template <class K, class T>
+void AVL<K,T>::printBT()
+{
+    printBT("", root, false);
+}
+
 
 #endif // _AVL_H
