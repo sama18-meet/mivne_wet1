@@ -372,6 +372,7 @@ void AVL<K,T>:: remove_less_then_two_sons(Node* root, Node* parent) {
     }
 }
 
+
 template <class K, class T>
 void AVL<K,T>:: switch_nodes(Node* root, Node* new_root) {
     //switches between key and dat of root and new_root
@@ -389,19 +390,26 @@ typename AVL<K,T>::Node* AVL<K,T>::remove_from_subtree(Node* root, K key) {
         return nullptr; //nothing to remove
     }
     if (root->key == key) {
-        Node* new_root;
-        Node* parent;
-        if (has_right_son(root) && has_left_son(root)) {
-            new_root = get_smallest_bigger_son(root); //son that will replace removed node
-            parent = get_parent(new_root->key);
-            switch_nodes(root, new_root);
+        if (root->right == nullptr && root->left == nullptr) {
+            delete root;
+            return nullptr;
         }
-        else {
-            new_root = root; //can remove requested node directly
-            parent = get_parent(new_root->key);
+        else if (root->right == nullptr && root->left != nullptr) {
+            Node* new_root = root->left;
+            delete root;
+            return new_root;
         }
-        remove_less_then_two_sons(new_root, parent);
-        std::cout << "PRight: " << parent->right << " Pleft: " << parent->left << "\n"; //debug
+        else if (root->right != nullptr && root->left == nullptr) {
+            Node* new_root = root->right;
+            delete root;
+            return new_root;
+        }
+        else { //node has two sons
+            Node* low_node = get_smallest_bigger_son(root);
+            switch_nodes(root, low_node);
+            root->right = remove_from_subtree(root->right, key);
+            return root;
+        }
     }
     if (key < root->key) {
         root->left = remove_from_subtree(root->left, key);
