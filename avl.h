@@ -60,7 +60,7 @@ public:
     AVL(const AVL&) = delete;
     AVL& operator=(const AVL&) = default; // shallow!
     ~AVL();
-    T get(const K& key);
+    T get(const K& key, T notFoundValue) const;
     bool insert(const K& key, T data);
     bool remove(K key);
     template <class function, class param>
@@ -236,7 +236,11 @@ typename AVL<K,T>::Node* AVL<K,T>::insertInSubtree(Node* node, const K& key, con
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class K, class T>
-T AVL<K,T>::get(const K& key) {
+T AVL<K,T>::get(const K& key, T notFoundValue) const {
+    Node* n = findInSubtree(root, key);
+    if (n==nullptr) {
+        return notFoundValue;
+    }
     return findInSubtree(root, key)->data;
 }
 
@@ -382,10 +386,10 @@ void AVL<K, T>::applyInorderOnKeyInternal(Node* node, function func, param p, in
     if (node == nullptr) {
         return;
     }
-    applyInorderInternal(node->left, func, p, done_nodes);
+    applyInorderOnKeyInternal(node->left, func, p, done_nodes);
     func(p, node->key, *done_nodes);
     (*done_nodes)++;
-    applyInorderInternal(node->right, func, p, done_nodes);
+    applyInorderOnKeyInternal(node->right, func, p, done_nodes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
