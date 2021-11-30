@@ -24,48 +24,37 @@ private:
     int size;
 
 private:
-    int get_bf(Node* root);
-    Node* find_in_subtree(Node* root, const K& key);
-    Node* insert_in_subtree(Node* root, const K& key, const T& data, bool* success);
-    Node* fix_balance(Node* root);
+    int getBf(Node* node) const;
+    Node* findInSubtree(Node* node, const K& key) const;
+    Node* insertInSubtree(Node* node, const K& key, const T& data, bool* success);
+    Node* fixBalance(Node* node);
     Node* rollRight(Node* B);
     Node* rollLeft(Node* A);
     Node* LL(Node* C);
     Node* LR(Node* C);
     Node* RL(Node* C);
     Node* RR(Node* C);
-    Node* remove_from_subtree(Node* root, K key);
+    Node* removeFromSubtree(Node* node, K key);
     template <class function, class param>
-    void apply_inorder_internal(Node* root, function func, param p, int done_nodes);
+    void applyInorderInternal(Node* node, function func, param p, int done_nodes);
     template <class function, class param>
-    void apply_inorder_on_key(function func, param p);
+    void applyInorderOnKey(function func, param p);
     template <class function, class param>
-    void apply_inorder_on_key_internal(Node* root, function func, param p, int done_nodes);
+    void applyInorderOnKeyInternal(Node* node, function func, param p, int done_nodes);
     static void mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* keys2, T* data, K* keysMerged, T* dataMerged);
     Node* buildAVLInternalFromArr(int size, K* keyArr, T* dataArr);
     template <class arrType>
     static void insertInArray(arrType* arr, arrType element, int index);
     void deleteSubtree(Node*);
-    void printBT(const std::string& prefix, const Node* node, bool isLeft);
+    void printBT(const std::string& prefix, const Node* node, bool isLeft) const;
+    Node* getNextInInorder(Node* node);
+    Node* getSmallestDescendant(Node* node);
+    void switchNodes(Node* node, Node* new_node);
+    int getHeight(Node* node) const;
+    void updateHeight(Node* node);
 
 
 public:
-    Node* get_smallest_bigger_son(Node* root); //return to private when done debugging
-    Node* get_smallest_son(Node* root); //return to private when done debugging
-    void remove_less_then_two_sons(Node* root, Node* parent); //return to private when done debugging
-    Node* get_parent(K key); //return to private when done debugging
-    Node* get_parent_in_subtree(Node* root, K key); //return to private when done debugging
-    bool is_key_immediate_kid(Node* root, K key); //return to private when done debugging
-    bool has_right_son(Node* root); //return to private when done debugging
-    bool has_left_son(Node* root); //return to private when done debugging
-    Node* get_only_child(Node* root); //return to private when done debugging
-    void switch_nodes(Node* root, Node* new_root); //return to private when done debugging
-    int get_height(Node* root); //return to private when done debugging
-    int get_height_by_key(K key); //return to private when done debugging
-    Node* get_node(K key); //return to private when done debugging
-    void update_height(Node* root); //return to private when done debugging
-
-
     AVL();
     AVL(const AVL<K,T>& avl1, const AVL<K,T>& avl2); // merge constructor
     AVL(const AVL&) = delete;
@@ -75,12 +64,9 @@ public:
     bool insert(const K& key, T data);
     void remove(K key);
     template <class function, class param>
-    void apply_inorder(function func, param p);
+    void applyInorder(function func, param p);
     int getSize() const;
-
-    void printBT();
-
-
+    void printBT() const;
 };
 
 
@@ -111,88 +97,31 @@ void AVL<K,T>::deleteSubtree(Node *n) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class K, class T>
-int AVL<K, T>::get_height(Node* root) {
-    if (root == nullptr) {
+int AVL<K, T>::getHeight(Node* node) const {
+    if (node == nullptr) {
         return -1;
     }
-    return (root->height);
+    return (node->height);
+}
+
+
+template <class K, class T>
+void AVL<K, T>::updateHeight(Node* node) {
+    if (node == nullptr) {
+        return;
+    }
+    node->height = fmax(getHeight(node->right), getHeight(node->left)) + 1;
 }
 
 template <class K, class T>
-int AVL<K, T>::get_height_by_key(K key) {
-    Node* node = get_node(key);
-    return get_height(node);
-}
-
-template <class K, class T>
-void AVL<K, T>::update_height(Node* root) {
-    root->height = fmax(get_height(root->right),get_height(root->left)) + 1;
-}
-
-template <class K, class T>
-int AVL<K,T>::get_bf(Node* root) {
-    if (root == nullptr) {
+int AVL<K,T>::getBf(Node* node) const {
+    if (node == nullptr) {
         return 0;
     }
-    return get_height(root->left) - get_height(root->right);
+    return getHeight(node->left) - getHeight(node->right);
 }
 
-template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_parent(K key) {
-    Node* parent = get_parent_in_subtree(root, key);
-    std::cout << "key: " << key << " parent: " << parent->key << "\n"; //debug
-    return parent;
-}
 
-template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_parent_in_subtree(Node* root, K key) {
-    if (root == nullptr) {
-        return nullptr; //ket does not exist in tree
-    }
-    if (is_key_immediate_kid(root, key)) { //means he's the parent
-        return root;
-    }
-    if (key < root->key) {
-        return get_parent_in_subtree(root->left, key);
-    }
-    else {
-        return get_parent_in_subtree(root->right, key);
-    }
-}
-
-template <class K, class T>
-bool AVL<K,T>::is_key_immediate_kid(Node* root, K key) {
-    //decided to write function because if root has 1 child naive solution raises errors
-    if (root->right != nullptr) {
-        if (root->right->key == key) {return true;}
-    }
-    if (root->left != nullptr) {
-        if (root->left->key == key) {return true;}
-    }
-    return false;
-}
-
-template <class K, class T>
-bool AVL<K,T>::has_right_son(Node* root) {
-    return root->right != nullptr;
-}
-template <class K, class T>
-bool AVL<K,T>::has_left_son(Node* root) {
-    return root->left != nullptr;
-}
-
-template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_only_child(Node* root) {
-    //use if root is known to have one or less children.
-    //if has no children will return nullptr
-    if (has_right_son(root)){
-        return root->right;
-    }
-    else if (has_left_son(root)) {
-        return root->left;
-    }
-    return nullptr;
-}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// INSERT //////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,8 +132,9 @@ typename AVL<K,T>::Node* AVL<K,T>::rollRight(Node* B) {
     Node* A = B->left;
     B->left = A->right;
     A->right = B;
-    //A->height = get_height(A); //not needed
-    B->height = get_height(B) - 2; //decreases by 2 after roll
+    updateHeight(B);
+    updateHeight(A); //not needed
+    //B->height = getHeight(B) - 2; //decreases by 2 after roll
     return A;
 }
 
@@ -213,8 +143,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollLeft(Node* A) {
     Node* B = A->right;
     A->right = B->left;
     B->left = A;
-    A->height = get_height(A) - 2; //decreases by 2 after roll
-    //B->height = get_height(B); //not needed
+    updateHeight(A); //decreases by 2 after roll
+    updateHeight(B); //not needed
     return B;
 }
 
@@ -241,25 +171,25 @@ typename AVL<K,T>::Node* AVL<K,T>::RR(Node* C) {
 }
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::fix_balance(Node* root) {
-    assert(root != nullptr);
-    int bf_root = get_bf(root);
-    int bf_right = get_bf(root->right);
-    int bf_left = get_bf(root->left);
-    if (bf_root == 2) {
+typename AVL<K,T>::Node* AVL<K,T>::fixBalance(Node* node) {
+    assert(node != nullptr);
+    int bf_node = getBf(node);
+    int bf_right = getBf(node->right);
+    int bf_left = getBf(node->left);
+    if (bf_node == 2) {
         if (bf_left >= 0) {
-            return LL(root);
+            return LL(node);
         }
         else {
-            return LR(root);
+            return LR(node);
         }
     }
     else {
         if (bf_right <= 0) {
-            return RR(root);
+            return RR(node);
         }
         else {
-            return RL(root);
+            return RL(node);
         }
     }
 }
@@ -268,37 +198,37 @@ typename AVL<K,T>::Node* AVL<K,T>::fix_balance(Node* root) {
 template <class K, class T>
 bool AVL<K,T>::insert(const K& key, T data) {
     bool success = true;
-    root = insert_in_subtree(root, key, data, &success);
+    root = insertInSubtree(root, key, data, &success);
     return success;
 }
 
 
 template <class K, class T>
 // insert node into subtree and return the head of the subtree after insertion
-typename AVL<K,T>::Node* AVL<K,T>::insert_in_subtree(Node* root, const K& key, const T& data, bool* success) {
-    if (root == nullptr) {
+typename AVL<K,T>::Node* AVL<K,T>::insertInSubtree(Node* node, const K& key, const T& data, bool* success) {
+    if (node == nullptr) {
         this->size += 1;
         Node* n = new Node(key, data);
         *success = true;
         return n;
     }
-    if (key == root->key) {
-        root->data = data;
+    if (key == node->key) {
+        node->data = data;
         *success = false;
-        return root;
+        return node;
     }
-    if (key < root->key) {
-        root->left = insert_in_subtree(root->left, key, data, success);
+    if (key < node->key) {
+        node->left = insertInSubtree(node->left, key, data, success);
     }
-    else if (key > root->key) {
-        root->right = insert_in_subtree(root->right, key, data, success);
+    else if (key > node->key) {
+        node->right = insertInSubtree(node->right, key, data, success);
     }
-    update_height(root);
-    int bf = get_bf(root);
+    updateHeight(node);
+    int bf = getBf(node);
     if (bf >= 2 || bf <= -2) {
-        return fix_balance(root);
+        return fixBalance(node);
     }
-    return root;
+    return node;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -307,27 +237,22 @@ typename AVL<K,T>::Node* AVL<K,T>::insert_in_subtree(Node* root, const K& key, c
 
 template <class K, class T>
 T AVL<K,T>::get(const K& key) {
-    return find_in_subtree(root, key)->data;
+    return findInSubtree(root, key)->data;
 }
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_node(K key) {
-    return find_in_subtree(root, key);
-}
-
-template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::find_in_subtree(Node* root, const K& key) {
-    if (root == nullptr) {
+typename AVL<K,T>::Node* AVL<K,T>::findInSubtree(Node* node, const K& key) const {
+    if (node == nullptr) {
         return nullptr;
     }
-    if (root->key == key) {
-        return root;
+    if (node->key == key) {
+        return node;
     }
-    if (key < root->key) {
-        return find_in_subtree(root->left, key);
+    if (key < node->key) {
+        return findInSubtree(node->left, key);
     }
     else {
-        return find_in_subtree(root->right, key);
+        return findInSubtree(node->right, key);
     }
 }
 
@@ -337,92 +262,83 @@ typename AVL<K,T>::Node* AVL<K,T>::find_in_subtree(Node* root, const K& key) {
 
 template <class K, class T>
 void AVL<K,T>::remove(K key) {
-    root = remove_from_subtree(root, key);
+    root = removeFromSubtree(root, key);
 }
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_smallest_son(Node* root) {
-    if (root->left == nullptr) { //arrived at smallest son
-        return root;
+typename AVL<K,T>::Node* AVL<K,T>::getSmallestDescendant(Node* node) {
+    if (node->left == nullptr) { //arrived at smallest son
+        return node;
     }
     else {
-        return get_smallest_son(root->left);
+        return getSmallestDescendant(node->left);
     }
 }
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::get_smallest_bigger_son(Node* root) {
-    root = root->right; //not empty because root has 2 children
-    return get_smallest_son(root);
+typename AVL<K,T>::Node* AVL<K,T>::getNextInInorder(Node* node) {
+    node = node->right; //not empty because node has 2 children
+    return getSmallestDescendant(node);
 }
 
 template <class K, class T>
-void AVL<K,T>:: remove_less_then_two_sons(Node* root, Node* parent) {
-    bool is_right_kid = (parent->right == root);
-    Node* new_child = get_only_child(root);
-    std::cout << "parent: " << parent->key << "\n"; //debug
-    std::cout << "new_child: " << new_child << "\n"; //debug
-    if (is_right_kid) {
-        std::cout << "Right" << "\n"; //debug
-        parent->right = new_child;
-    }
-    else {
-        std::cout << "left" << "\n"; //debug
-        parent->left = new_child;
-    }
-}
-
-
-template <class K, class T>
-void AVL<K,T>:: switch_nodes(Node* root, Node* new_root) {
-    //switches between key and dat of root and new_root
-    K root_key = root->key;
-    T root_data = root->data;
-    root->key = new_root->key;
-    root->data = new_root->data;
-    new_root->key = root_key;
-    new_root->data = root_data;
+void AVL<K,T>:: switchNodes(Node* node, Node* new_node) {
+    //switches between key and dat of node and new_node
+    K node_key = node->key;
+    T node_data = node->data;
+    node->key = new_node->key;
+    node->data = new_node->data;
+    new_node->key = node_key;
+    new_node->data = node_data;
 }
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::remove_from_subtree(Node* root, K key) {
-    if (root == nullptr) {
+typename AVL<K,T>::Node* AVL<K,T>::removeFromSubtree(Node* node, K key) {
+    if (node == nullptr) {
         return nullptr; //nothing to remove
     }
-    if (root->key == key) {
-        if (root->right == nullptr && root->left == nullptr) {
-            delete root;
+    if (node->key == key) {
+        if (node->right == nullptr && node->left == nullptr) {
+            delete node;
             return nullptr;
         }
-        else if (root->right == nullptr && root->left != nullptr) {
-            Node* new_root = root->left;
-            delete root;
-            return new_root;
+        else if (node->right == nullptr && node->left != nullptr) {
+            Node* new_node = node->left;
+            delete node;
+            return new_node;
         }
-        else if (root->right != nullptr && root->left == nullptr) {
-            Node* new_root = root->right;
-            delete root;
-            return new_root;
+        else if (node->right != nullptr && node->left == nullptr) {
+            Node* new_node = node->right;
+            delete node;
+            return new_node;
         }
         else { //node has two sons
-            Node* low_node = get_smallest_bigger_son(root);
-            switch_nodes(root, low_node);
-            root->right = remove_from_subtree(root->right, key);
-            return root;
+            Node* low_node = getNextInInorder(node);
+            switchNodes(node, low_node);
+            node->right = removeFromSubtree(node->right, key);
+            updateHeight(node->right);
+            updateHeight(node);
+            int bf = getBf(node);
+            if (bf >= 2 || bf <= -2) {
+                return fixBalance(node);
+            }
+            return node;
         }
     }
-    if (key < root->key) {
-        root->left = remove_from_subtree(root->left, key);
+    if (key < node->key) {
+        node->left = removeFromSubtree(node->left, key);
+        updateHeight(node);
     }
     else {
-        root->right = remove_from_subtree(root->right, key);
+        node->right = removeFromSubtree(node->right, key);
+        updateHeight(node);
     }
-    root->height = get_height(root);
-    int bf = get_bf(root);
+    node->height = getHeight(node);
+    int bf = getBf(node);
     if (bf >= 2 || bf <= -2) {
-        return fix_balance(root);
+        return fixBalance(node);
     }
-    return root;
+    return node;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// APPLY_INORDER ///////////////////////////////////////////////////////////
@@ -430,38 +346,38 @@ typename AVL<K,T>::Node* AVL<K,T>::remove_from_subtree(Node* root, K key) {
 
 template <class K, class T>
 template <class function, class param>
-void AVL<K, T>::apply_inorder(function func, param p) {
-    apply_inorder_internal<function, param>(root, func, p, 0);
+void AVL<K, T>::applyInorder(function func, param p) {
+    applyInorderInternal<function, param>(root, func, p, 0);
 }
 
 template <class K, class T>
 template <class function, class param>
-void AVL<K, T>::apply_inorder_on_key(function func, param p) {
-    apply_inorder_on_key_internal<function, param>(root, func, p, 0);
+void AVL<K, T>::applyInorderOnKey(function func, param p) {
+    applyInorderOnKeyInternal<function, param>(root, func, p, 0);
 }
 
 template <class K, class T>
 template <class function, class param>
-void AVL<K, T>::apply_inorder_internal(Node* root, function func, param p, int done_nodes) {
-    if (root == nullptr) {
+void AVL<K, T>::applyInorderInternal(Node* node, function func, param p, int done_nodes) {
+    if (node == nullptr) {
         return;
     }
-    apply_inorder_internal(root->left, func, p, done_nodes);
-    func(p, root->data, done_nodes);
+    applyInorderInternal(node->left, func, p, done_nodes);
+    func(p, node->data, done_nodes);
     done_nodes++;
-    apply_inorder_internal(root->right, func, p, done_nodes);
+    applyInorderInternal(node->right, func, p, done_nodes);
 }
 
 template <class K, class T>
 template <class function, class param>
-void AVL<K, T>::apply_inorder_on_key_internal(Node* root, function func, param p, int done_nodes) {
-    if (root == nullptr) {
+void AVL<K, T>::applyInorderOnKeyInternal(Node* node, function func, param p, int done_nodes) {
+    if (node == nullptr) {
         return;
     }
-    apply_inorder_internal(root->left, func, p, done_nodes);
-    func(p, root->key, done_nodes);
+    applyInorderInternal(node->left, func, p, done_nodes);
+    func(p, node->key, done_nodes);
     done_nodes++;
-    apply_inorder_internal(root->right, func, p, done_nodes);
+    applyInorderInternal(node->right, func, p, done_nodes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,11 +444,14 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
         if (keys1[curr1] <= keys2[curr2]) {
             keysMerged[currI] = keys1[curr1];
             dataMerged[currI] = data1[curr1];
+            curr1++;
         }
         else {
             keysMerged[currI] = keys2[curr2];
             dataMerged[currI] = data2[curr2];
+            curr2++;
         }
+        currI++;
     }
 }
 
@@ -544,12 +463,12 @@ AVL<K,T>::AVL(const AVL<K,T>& avl1, const AVL<K,T>& avl2) {
     int n2 = avl2.getSize();
     T* dataArray1 = new T[n1];
     T* dataArray2 = new T[n2];
-    avl1.apply_inorder(insertInArray<T>, dataArray1);
-    avl2.apply_inorder(insertInArray<T>, dataArray2);
+    avl1.applyInorder(insertInArray<T>, dataArray1);
+    avl2.applyInorder(insertInArray<T>, dataArray2);
     K* keyArray1 = new K[n1];
     K* keyArray2 = new K[n2];
-    avl1.apply_inorder_on_key(insertInArray<K>, keyArray1);
-    avl2.apply_inorder_on_key(insertInArray<K>, keyArray2);
+    avl1.applyInorderOnKey(insertInArray<K>, keyArray1);
+    avl2.applyInorderOnKey(insertInArray<K>, keyArray2);
     T* dataMerged = new T[n1+ n2];
     K* keysMerged = new K[n1+n2];
     mergeSortedArrays(n1, n2, keyArray1, dataArray1, keyArray2, dataArray2, keysMerged, dataMerged);
@@ -558,9 +477,10 @@ AVL<K,T>::AVL(const AVL<K,T>& avl1, const AVL<K,T>& avl2) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////// PRINT ////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class K, class T>
-void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
-{
+void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft) const {
     if( node != nullptr )
     {
         std::cout << prefix;
@@ -577,8 +497,7 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
 }
 
 template <class K, class T>
-void AVL<K,T>::printBT()
-{
+void AVL<K,T>::printBT() const {
     printBT("", root, false);
 }
 
