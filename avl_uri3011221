@@ -24,7 +24,6 @@ private:
     int size;
 
 private:
-    int get_bf(Node* root);
     Node* find_in_subtree(Node* root, K key);
     Node* insert_in_subtree(Node* root, K key, T data);
     Node* fix_balance(Node* root);
@@ -62,6 +61,7 @@ public:
     int get_height_by_key(K key); //return to private when done debugging
     Node* get_node(K key); //return to private when done debugging
     void update_height(Node* root); //return to private when done debugging
+    int get_bf(Node* root); //return to private when done debugging
 
     T get(K key);
     void insert(K key, T data);
@@ -120,7 +120,7 @@ int AVL<K,T>::get_bf(Node* root) {
 template <class K, class T>
 typename AVL<K,T>::Node* AVL<K,T>::get_parent(K key) {
     Node* parent = get_parent_in_subtree(root, key);
-    std::cout << "key: " << key << " parent: " << parent->key << "\n"; //debug
+    if std::cout << "key: " << key << " parent: " << parent->key << "\n"; //debug
     return parent;
 }
 
@@ -184,8 +184,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollRight(Node* B) {
     Node* A = B->left;
     B->left = A->right;
     A->right = B;
-    A->height = get_height(A);
-    B->height = get_height(B);
+    //A->height = get_height(A); //not needed
+    B->height = get_height(B) - 2; //decreases by 2 after roll
     return A;
 }
 
@@ -194,8 +194,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollLeft(Node* A) {
     Node* B = A->right;
     A->right = B->left;
     B->left = A;
-    A->height = get_height(A);
-    B->height = get_height(B);
+    A->height = get_height(A) - 2; //decreases by 2 after roll
+    //B->height = get_height(B); //not needed
     return B;
 }
 
