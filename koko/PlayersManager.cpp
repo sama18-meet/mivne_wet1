@@ -125,3 +125,11 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArr) {
     return true;
 }
 
+void PlayersManager::reverseArray(int *playersArr, int size) {
+    int switch_var;
+    for (int i = 0; i < size/2; i++) {
+        switch_var = *(playersArr+i);
+        *(playersArr+i) = *(playersArr+size-i-1);
+        *(playersArr+size-i-1) = switch_var;
+    }
+}
