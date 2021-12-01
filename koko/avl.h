@@ -263,6 +263,9 @@ typename AVL<K,T>::Node* AVL<K,T>::findInSubtree(Node* node, const K& key) const
 
 template <class K, class T>
 T AVL<K,T>::getMax() const {
+    if (root==nullptr){
+        return nullptr;
+    }
     return getMaxInSubtree(root)->data;
 }
 
