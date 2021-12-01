@@ -34,7 +34,7 @@ bool PlayersManager::addGroup(int groupId) {
 }
 
 bool PlayersManager::removePlayer(int playerId) {
-        Player* p = playersById->get(playerId, nullptr);
+    Player* p = playersById->get(playerId, nullptr);
     if (p==nullptr) {
         return false;
     }
@@ -111,3 +111,17 @@ bool PlayersManager::getHighestLvl(int groupId, int* playerId) {
         return true;
     }
 }
+
+void PlayersManager::insertHighestPlayerIdInArray(int* arr, Group* g, int idx) {
+    Player* p = g->getHighest();
+    arr[idx] = p->getId();
+}
+
+bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArr) {
+    if (numGroups > nonEmptyGroups->getSize()) {
+        return false;
+    }
+    nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, *playersArr, numGroups);
+    return true;
+}
+

@@ -28,7 +28,7 @@ void Group::operator<<(Group* replacementGroup) {
     AVL<const Vec2D*, Player*>* new_players = new AVL<const Vec2D*, Player*>(this->players, replacementGroup->players); //merge
     delete this->players;
     players = new_players;
-    players->applyInorder(Player::setGroupStatic, this);
+    players->applyInorder(Player::setGroupStatic, this, -1);
 
     highest = newHighest;
 }
