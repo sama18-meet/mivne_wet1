@@ -29,7 +29,7 @@ public:
     bool getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers);
     bool getGroupsHighestLvl(int numGroups, int** playersArr);
     void print();
-    void insertHighestPlayerIdInArray(int* arr, Group* g, int idx);
+    static void insertHighestPlayerIdInArray(int* arr, Group* g, int idx);
 };
 
 
