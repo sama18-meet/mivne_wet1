@@ -14,6 +14,9 @@ private:
 
 private:
     void updateHighestPlayer();
+    static void insertHighestPlayerIdInArray(int* arr, Group* g, int idx);
+    static void reverseArray(int* playersArr, int size);
+
 
 public:
     PlayersManager();
@@ -29,7 +32,7 @@ public:
     bool getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers);
     bool getGroupsHighestLvl(int numGroups, int** playersArr);
     void print();
-    static void insertHighestPlayerIdInArray(int* arr, Group* g, int idx);
+    
 };
 
 
