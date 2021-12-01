@@ -20,6 +20,7 @@ void PlayersManager::print() {
     std::cout << "playersById: " << "\n";
     playersById->printBT();
     std::cout << "highest: " << highest->getId();
+    std::cout << "______________________________________________________" << std::endl;
 }
 
 bool PlayersManager::addGroup(int groupId) {

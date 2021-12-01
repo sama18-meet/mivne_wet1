@@ -17,10 +17,9 @@ private:
     static void insertHighestPlayerIdInArray(int* arr, Group* g, int idx);
     static void reverseArray(int* playersArr, int size);
 
-
 public:
     PlayersManager();
-    ~PlayersManager();
+    ~PlayersManager() = default;
     PlayersManager(const PlayersManager&) = delete;
     PlayersManager& operator=(const PlayersManager&) = delete;
     bool addGroup(int groupId); // false if groupId already exists
@@ -32,7 +31,6 @@ public:
     bool getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers);
     bool getGroupsHighestLvl(int numGroups, int** playersArr);
     void print();
-    
 };
 
 

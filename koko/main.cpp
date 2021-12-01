@@ -72,7 +72,13 @@ int main() {
     pm->addGroup(1);
     pm->addGroup(2);
 
+    pm->addPlayer(1, 1, 110);
     pm->print();
+    pm->addPlayer(2, 1, 220);
+    pm->print();
+    pm->addPlayer(3, 2, 330);
+    pm->print();
+    pm->replaceGroup(1, 2);
 
 
 /*
