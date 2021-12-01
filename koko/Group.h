@@ -20,6 +20,7 @@ public:
     void operator<<(Group*); // eat
     Player* getHighest() const;
     void print();
+    void updateHighestPlayer();
 };
 
 
