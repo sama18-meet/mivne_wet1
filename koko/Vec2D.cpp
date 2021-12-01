@@ -3,23 +3,23 @@
 
 Vec2D::Vec2D(int x, int y) : x(x), y(y) {}
 
-bool Vec2D::operator==(Vec2D v) {
+bool Vec2D::operator==(const Vec2D& v) const {
     return this->x == v.x && this->y == v.y;
 }
 
-bool Vec2D::operator>(Vec2D v) {
+bool Vec2D::operator>(const Vec2D& v) const {
     return this->x > v.x || (this->x == v.x && this->y > v.y);
 }
 
-bool Vec2D::operator>=(Vec2D v) {
+bool Vec2D::operator>=(const Vec2D& v) const {
     return *this == v || *this > v;
 }
 
-bool Vec2D::operator<(Vec2D v) {
+bool Vec2D::operator<(const Vec2D& v) const {
     return !(*this>=v);
 }
 
-bool Vec2D::operator<=(Vec2D v) {
+bool Vec2D::operator<=(const Vec2D& v) const {
     return !(*this>v);
 }
 

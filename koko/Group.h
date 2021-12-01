@@ -8,9 +8,8 @@ class Vec2D;
 class Group {
 private:
     int id;
-    Player* highest;
     AVL<const Vec2D*, Player*>* players;
-
+    Player* highest;
 public:
     Group(int id);
     ~Group() = default;
@@ -21,7 +20,7 @@ public:
     bool removePlayer(Player*);
     void operator<<(Group*); // eat
     Player* getHighest() const;
-    void print();
+    static void print(int, Group*, int);
     void updateHighestPlayer();
     int getNumOfPlayers() const;
     template <class function, class param>
@@ -36,5 +35,6 @@ template <class function, class param>
 void Group::applyInorderPlayers(function func, param p) {
     players->applyInorder(func, p, ALL_NODES);
 }
+
 
 #endif // _GROUP_H

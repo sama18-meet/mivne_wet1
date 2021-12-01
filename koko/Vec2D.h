@@ -11,11 +11,11 @@ public:
     ~Vec2D() = default;
     Vec2D(const Vec2D&) = default;
     Vec2D& operator=(const Vec2D&) = default;
-    bool operator==(Vec2D v);
-    bool operator>(Vec2D v);
-    bool operator>=(Vec2D v);
-    bool operator<(Vec2D v);
-    bool operator<=(Vec2D v);
+    bool operator==(const Vec2D& v) const;
+    bool operator>(const Vec2D& v) const;
+    bool operator>=(const Vec2D& v) const;
+    bool operator<(const Vec2D& v) const;
+    bool operator<=(const Vec2D& v) const;
     void updateX(int new_x);
     void updateY(int new_y);
 };

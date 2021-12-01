@@ -19,7 +19,9 @@ void PlayersManager::print() {
     playersByLvl->printBT();
     std::cout << "playersById: " << "\n";
     playersById->printBT();
-    std::cout << "highest: " << highest->getId();
+    std::cout << "highest: " << highest->getId() << std::endl;
+    std::cout << "groups: " << std::endl;
+    groups->applyInorder(Group::print, 1, -1);
     std::cout << "______________________________________________________" << std::endl;
 }
 
@@ -77,6 +79,8 @@ bool PlayersManager::replaceGroup(int groupId, int replacementId) {
     }
     *repGroup << group;
     delete group;
+    assert(groups->remove(groupId));
+    assert(nonEmptyGroups->remove(groupId));
     return true;
 }
 

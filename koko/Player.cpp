@@ -20,6 +20,9 @@ void Player::setGroup(Group* new_group) {
 }
 
 void Player::setGroupStatic(Group* new_group, Player* p, int redundant) {
+    if (p==nullptr) {
+        return;
+    }
     p->setGroup(new_group);
 }
 

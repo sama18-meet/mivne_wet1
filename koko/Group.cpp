@@ -22,9 +22,9 @@ bool Group::removePlayer(Player* player) {
 }
 
 void Group::operator<<(Group* replacementGroup) {
-    Player* highestThis = this->highest;
-    Player* highestRep = replacementGroup->highest;
-    Player* newHighest = highestThis->getRankVec() > highestRep->getRankVec() ? highestThis : highestRep;
+    Player* highestThis = this->getHighest();
+    Player* highestRep = replacementGroup->getHighest();
+    Player* newHighest = *(highestThis->getRankVec()) > *(highestRep->getRankVec()) ? highestThis : highestRep;
     AVL<const Vec2D*, Player*>* new_players = new AVL<const Vec2D*, Player*>(this->players, replacementGroup->players); //merge
     delete this->players;
     players = new_players;
@@ -37,9 +37,12 @@ Player* Group::getHighest() const {
     return highest;
 }
 
-void Group::print() {
-    std::cout << "Printing group.. id: " << id << ". players: " << std::endl;
-    players->printBT();
+void Group::print(int i, Group* g, int j) {
+    if (g==nullptr) {
+        return;
+    }
+    std::cout << "Printing group.. id: " << g->id << ". players: " << std::endl;
+    g->players->printBT();
 }
 
 

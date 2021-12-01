@@ -375,7 +375,7 @@ typename AVL<K,T>::Node* AVL<K,T>::removeFromSubtree(Node* node, K key, bool* su
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <class K, class T>
-    template <class function, class param>
+template <class function, class param>
 void AVL<K, T>::applyInorder(function func, param p, int num_nodes) {
     int done_nodes = 0;
     applyInorderInternal<function, param>(root, func, p, &done_nodes, num_nodes);
@@ -451,7 +451,6 @@ typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int size, K* keyArr, 
     return n;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// MERGE ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -526,14 +525,14 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "|--" : "^--" );
+        std::cout << (isLeft ? "├──" : "└──" );
 
         // print the value of the node
         std::cout << node->data->getId() << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
     }
 }
 
