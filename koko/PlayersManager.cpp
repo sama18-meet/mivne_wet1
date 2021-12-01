@@ -127,10 +127,46 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArr) {
 }
 
 void PlayersManager::reverseArray(int *playersArr, int size) {
+    if (size==0) {return;}
     int switch_var;
     for (int i = 0; i < size/2; i++) {
         switch_var = *(playersArr+i);
         *(playersArr+i) = *(playersArr+size-i-1);
         *(playersArr+size-i-1) = switch_var;
     }
+}
+
+void PlayersManager::insertPlayerIdInArray(int* arr, Player* p, int idx) {
+    arr[idx] = p->getId();
+}
+
+bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers) {
+    if (groupId<0) {
+        *numPlayers = playersByLvl->getSize();
+        if (*numPlayers==0) {
+            playersArr = nullptr;
+        }
+        else {
+            *playersArr = new int[*numPlayers];
+            playersByLvl->applyInorder(PlayersManager::insertPlayerIdInArray, *playersArr, ALL_NODES);
+        }
+    }
+    else {
+        Group* g = groups->get(groupId, nullptr);
+        if (g==nullptr) {
+            return false;
+        }
+        *numPlayers = g->getNumOfPlayers();
+        if (*numPlayers==0) {
+            playersArr = nullptr;
+        }
+        else {
+            *playersArr = new int[*numPlayers];
+            g->applyInorderPlayers(PlayersManager::insertPlayerIdInArray, *playersArr);
+        }
+    }
+    if (*numPlayers > 0) {
+        reverseArray(*playersArr, *numPlayers);
+    }
+    return true;
 }

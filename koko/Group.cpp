@@ -46,3 +46,7 @@ void Group::print() {
 void Group::updateHighestPlayer() {
     highest = players->getMax();
 }
+
+int Group::getNumOfPlayers() const {
+    return players->getSize();
+}
