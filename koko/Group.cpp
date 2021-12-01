@@ -37,3 +37,7 @@ void Group::print() {
     std::cout << "Printing group.. id: " << id << ". players: " << std::endl;
     players->printBT();
 }
+
+void Group::updateHighestPlayer() {
+    highest = players->getMax();
+}
