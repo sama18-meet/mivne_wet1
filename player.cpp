@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Group.h"
 
-Player::Player(int id, int lvl, Group* group) : id(id), lvl(lvl), group(group), rankVec(lvl, id) {}
+Player::Player(int id, int lvl) : id(id), lvl(lvl), group(nullptr), rankVec(lvl, id) {}
 
 int Player::getId() const {
     return this->id;
