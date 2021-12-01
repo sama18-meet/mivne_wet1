@@ -49,6 +49,7 @@ private:
     void printBT(const std::string& prefix, const Node* node, bool isLeft) const;
     Node* getNextInInorder(Node* node);
     Node* getSmallestDescendant(Node* node);
+    Node* getMaxInSubtree(Node* root) const;
     void switchNodes(Node* node, Node* new_node);
     int getHeight(Node* node) const;
     void updateHeight(Node* node);
@@ -66,6 +67,7 @@ public:
     template <class function, class param>
     void applyInorder(function func, param p);
     int getSize() const;
+    T getMax() const;
     void printBT() const;
 };
 
@@ -259,6 +261,20 @@ typename AVL<K,T>::Node* AVL<K,T>::findInSubtree(Node* node, const K& key) const
     }
 }
 
+template <class K, class T>
+T AVL<K,T>::getMax() const {
+    return getMaxInSubtree(root)->data;
+}
+
+template <class K, class T>
+typename AVL<K,T>::Node* AVL<K,T>::getMaxInSubtree(Node* node) const {
+    if (node->right == nullptr) {
+        return node;
+    }
+    else {
+        return getMaxInSubtree(node->right);
+    }
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,14 +521,14 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "├──" : "└──" );
+        std::cout << (isLeft ? "|--" : "^--" );
 
         // print the value of the node
-        std::cout << node->data->getId() << std::endl;
+        std::cout << node->data << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
     }
 }
 
