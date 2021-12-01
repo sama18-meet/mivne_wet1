@@ -34,9 +34,8 @@ bool PlayersManager::addGroup(int groupId) {
 }
 
 bool PlayersManager::removePlayer(int playerId) {
-    Player notFoundPlayer = Player(-1, -1);
-    Player* p = playersById->get(playerId, &notFoundPlayer);
-    if (p->getId() > 0) {
+        Player* p = playersById->get(playerId, nullptr);
+    if (p==nullptr) {
         return false;
     }
     p->getGroup()->removePlayer(p); // remove player from Players tree in his group
@@ -94,4 +93,21 @@ bool PlayersManager::increaseLevel(int playerId, int lvlIncrease) {
     g->updateHighestPlayer();
     highest = playersByLvl->getMax();
     return true;
+}
+
+bool PlayersManager::getHighestLvl(int groupId, int* playerId) {
+    if (groupId < 0) {
+        int id = (highest==nullptr)? -1 : highest->getId();
+        *playerId = id;
+        return true;
+    }
+    else {
+        Group* g = groups->get(groupId, nullptr);
+        if (g==nullptr) {
+            return false;
+        }
+        int id = (g->getHighest()==nullptr)? -1 : g->getHighest()->getId();
+        *playerId = id;
+        return true;
+    }
 }
