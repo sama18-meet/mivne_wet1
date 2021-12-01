@@ -15,6 +15,7 @@ public:
     ~Group() = default;
     Group(const Group&) = delete;
     Group& operator=(const Group&) = delete;
+    int getId() const;
     bool addPlayer(Player*);
     bool removePlayer(Player*);
     void operator<<(Group*); // eat

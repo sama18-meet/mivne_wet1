@@ -5,6 +5,10 @@ Group::Group(int id) : id(id), highest(nullptr) {
     players = new AVL<const Vec2D*, Player*>();
 }
 
+int Group::getId() const {
+    return this->id;
+}
+
 bool Group::addPlayer(Player* new_player) {
     const Vec2D* rank = new_player->getRankVec();
     bool success = players->insert(rank, new_player);
@@ -37,6 +41,7 @@ void Group::print() {
     std::cout << "Printing group.. id: " << id << ". players: " << std::endl;
     players->printBT();
 }
+
 
 void Group::updateHighestPlayer() {
     highest = players->getMax();

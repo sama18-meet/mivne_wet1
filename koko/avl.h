@@ -278,6 +278,7 @@ typename AVL<K,T>::Node* AVL<K,T>::getMaxInSubtree(Node* node) const {
         return getMaxInSubtree(node->right);
     }
 }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// REMOVE //////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -524,14 +525,14 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "|--" : "^--" );
+        std::cout << (isLeft ? "├──" : "└──" );
 
         // print the value of the node
-        std::cout << node->data << std::endl;
+        std::cout << node->data->getId() << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
     }
 }
 

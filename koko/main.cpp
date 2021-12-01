@@ -2,6 +2,8 @@
 #include "avl.h"
 #include "Player.h"
 #include "Group.h"
+#include "PlayersManager.h"
+
 /*
 void print_int(int x, int p, int d) {
     std::cout << p << "\n";
@@ -41,6 +43,7 @@ void print_player_level(int x, Player* p, int d) {
 }
 
 int main() {
+    /*
     Group* g1 = new Group(1);
     for (int i = 0; i < 8; i+=2) {
         Player* p = new Player(i, i*2);
@@ -63,7 +66,13 @@ int main() {
     g2->removePlayer(p);
     g2->print();
     delete g2;
+     */
 
+    PlayersManager* pm = new PlayersManager();
+    pm->addGroup(1);
+    pm->addGroup(2);
+
+    pm->print();
 
 
 /*
