@@ -1,6 +1,7 @@
 #include <iostream>
 #include "avl.h"
 #include "Player.h"
+#include "Group.h"
 /*
 void print_int(int x, int p, int d) {
     std::cout << p << "\n";
@@ -40,15 +41,41 @@ void print_player_level(int x, Player* p, int d) {
 }
 
 int main() {
+    Group* g1 = new Group(1);
+    for (int i = 0; i < 8; i+=2) {
+        Player* p = new Player(i, i*2);
+        g1->addPlayer(p);
+    }
+    g1->print();
+
+    Group* g2 = new Group(2);
+    for (int i = 10; i < 18; i+=2) {
+        Player* p = new Player(i, i*2);
+        g2->addPlayer(p);
+    }
+    Player* p = new Player(20, 20*2);
+    g2->addPlayer(p);
+    g2->print();
+
+    *g1 << g2;
+    g1->print();
+    g2->print();
+    g2->removePlayer(p);
+    g2->print();
+    delete g2;
+
+
+
+/*
     AVL<int, Player*>* pm1 = new AVL<int, Player*>();
     for (int i = 0; i < 8; i+=2) {
-        Player* p = new Player(i, i*2, nullptr);
+        Player* p = new Player(i, i*2);
         pm1->insert(i, p);
     }
     pm1->printBT();
     AVL<int , Player*>* pm2 = new AVL<int, Player*>();
     for (int i = 1; i < 8; i+=2) {
-        Player* p = new Player(i, i*2, nullptr);
+        Player* p = new Player(i, i*2);
         pm2->insert(i, p);
     }
     AVL<int , Player*>* pm3 = new AVL<int , Player*>(pm1, pm2);
@@ -56,6 +83,7 @@ int main() {
     pm2->printBT();
 
     //pm1.applyInorder(print_player_level, 0);
+    */
     return 0;
 }
 
