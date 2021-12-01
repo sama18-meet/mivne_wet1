@@ -213,7 +213,6 @@ typename AVL<K,T>::Node* AVL<K,T>::insertInSubtree(Node* node, const K& key, con
         return n;
     }
     if (key == node->key) {
-        node->data = data;
         *success = false;
         return node;
     }
@@ -241,7 +240,7 @@ T AVL<K,T>::get(const K& key, T notFoundValue) const {
     if (n==nullptr) {
         return notFoundValue;
     }
-    return findInSubtree(root, key)->data;
+    return n->data;
 }
 
 template <class K, class T>
@@ -509,7 +508,7 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
         std::cout << (isLeft ? "├──" : "└──" );
 
         // print the value of the node
-        std::cout << node->data << std::endl;
+        std::cout << node->data->getId() << std::endl;
 
         // enter the next tree level - left and right branch
         printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
