@@ -9,7 +9,7 @@ bool Vec2D::operator==(const Vec2D& v) const {
 }
 
 bool Vec2D::operator>(const Vec2D& v) const {
-    return this->x > v.x || (this->x == v.x && this->y > v.y);
+    return this->x > v.x || (this->x == v.x && this->y < v.y);
 }
 
 bool Vec2D::operator>=(const Vec2D& v) const {
