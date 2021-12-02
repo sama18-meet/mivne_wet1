@@ -124,6 +124,7 @@ StatusType GetGroupsHighestLevel(void *DS, int numOfGroups, int **Players) {
 }
 
 void Quit(void** DS) {
-    PlayersManager* pm = (PlayersManager*)DS;
+    PlayersManager* pm = (PlayersManager*)* DS;
     delete pm;
+    *DS = nullptr;
 }
