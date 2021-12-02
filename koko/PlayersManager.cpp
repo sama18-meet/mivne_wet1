@@ -130,7 +130,10 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
     if (numGroups > nonEmptyGroups->getSize()) {
         return false;
     }
-    int* playersArr = new int[numGroups];
+    int* playersArr = (int *) malloc(sizeof(int)*numGroups);
+    if (playersArr == nullptr) {
+        throw std::bad_alloc();
+    }
     nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, playersArr, numGroups);
     *playersArrPtr = playersArr;
     return true;
