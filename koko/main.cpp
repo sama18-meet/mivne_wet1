@@ -67,7 +67,6 @@ int main() {
     g2->print();
     delete g2;
      */
-
     PlayersManager* pm = new PlayersManager();
     pm->addGroup(1);
     pm->addGroup(2);
@@ -76,12 +75,28 @@ int main() {
     pm->addPlayer(2, 1, 220);
     //pm->print();
     pm->addPlayer(3, 2, 330);
-    pm->print();
+    //pm->addPlayer(4, 2, 222);
     pm->replaceGroup(1, 2);
-    pm->print();
 
     pm->removePlayer(3);
-    pm->print();
+    pm->addPlayer(4, 2, 440);
+    pm->addPlayer(5, 2, 550);
+    //pm->print();
+
+    pm->increaseLevel(1, 1000);
+    //pm->print();
+    int highest;
+    std::cout << "highest should be 1 in both " << std::endl;
+    pm->getHighestLvl(2, &highest);
+    std::cout << "highest in 2 is: " << highest << std::endl;
+    pm->getHighestLvl(-1, &highest);
+    std::cout << "highest in all is: " << highest << std::endl;
+
+    /*
+     * empty set
+     * ordered
+     * leaf, root, midway
+     */
 
 
 /*

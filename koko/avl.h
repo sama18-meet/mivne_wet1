@@ -328,21 +328,21 @@ typename AVL<K,T>::Node* AVL<K,T>::removeFromSubtree(Node* node, K key, bool* su
         if (node->right == nullptr && node->left == nullptr) {
             delete node;
             *success = true;
-            size = size - 1;
+            size -= 1;
             return nullptr;
         }
         else if (node->right == nullptr && node->left != nullptr) {
             Node* new_node = node->left;
             delete node;
             *success = true;
-            size = size - 1;
+            size -= 1;
             return new_node;
         }
         else if (node->right != nullptr && node->left == nullptr) {
             Node* new_node = node->right;
             delete node;
             *success = true;
-            size = size - 1;
+            size -= 1;
             return new_node;
         }
         else { //node has two sons
@@ -475,13 +475,13 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
     int curr1 = 0;
     int curr2 = 0;
     int currI = 0;
-    while (curr1 + curr2 < size1+size2) {
-        if (curr1 < size1 && keys1[curr1] <= keys2[curr2]) {
+    while (curr1 < size1 || curr2 < size2) {
+        if (curr2 >= size2 || keys1[curr1] <= keys2[curr2]) {
             keysMerged[currI] = keys1[curr1];
             dataMerged[currI] = data1[curr1];
             curr1++;
         }
-        else {
+        else if (curr1 >= size1 || keys2[curr2] <= keys1[curr1]){
             keysMerged[currI] = keys2[curr2];
             dataMerged[currI] = data2[curr2];
             curr2++;
@@ -528,14 +528,18 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "|--" : "^--" );
+        std::cout << (isLeft ? "├──" : "└──" );
 
         // print the value of the node
+        if (node->data == nullptr) {
+            std::cout << "DATA IS NULLPTR IN PRINTBT" << std::endl;
+        }
+
         std::cout << node->data->getId() << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
     }
 }
 

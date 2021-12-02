@@ -13,24 +13,23 @@ bool Group::addPlayer(Player* new_player) {
     const Vec2D* rank = new_player->getRankVec();
     bool success = players->insert(rank, new_player);
     new_player->setGroup(this);
+    updateHighestPlayer();
     return success;
 }
 
 bool Group::removePlayer(Player* player) {
     bool success = players->remove(player->getRankVec());
+    updateHighestPlayer();
     return success;
 }
 
 void Group::operator<<(Group* replacementGroup) {
-    Player* highestThis = this->getHighest();
-    Player* highestRep = replacementGroup->getHighest();
-    Player* newHighest = *(highestThis->getRankVec()) > *(highestRep->getRankVec()) ? highestThis : highestRep;
     AVL<const Vec2D*, Player*>* new_players = new AVL<const Vec2D*, Player*>(this->players, replacementGroup->players); //merge
     delete this->players;
     players = new_players;
     players->applyInorder(Player::setGroupStatic, this, -1);
+    updateHighestPlayer();
 
-    highest = newHighest;
 }
 
 Player* Group::getHighest() const {
@@ -39,8 +38,10 @@ Player* Group::getHighest() const {
 
 void Group::print(int i, Group* g, int j) {
     if (g==nullptr) {
+        std::cout << "WARNING: attempt to print null group " << std::endl;
         return;
     }
+    std::cout << "Printing group.. id: " << g->id << ". players: " << std::endl;
     g->players->printBT();
 }
 

@@ -43,11 +43,9 @@ bool PlayersManager::removePlayer(int playerId) {
     }
     p->getGroup()->removePlayer(p); // remove player from Players tree in his group
     p->getGroup()->updateHighestPlayer();
+    nonEmptyGroups->remove(p->getId());
     playersById->remove(p->getId());
     playersByLvl->remove(p->getRankVec());
-    if (p->getGroup()->getNumOfPlayers()==0) { //if group is now empty
-        nonEmptyGroups->remove(p->getGroup()->getId());
-    }
     updateHighestPlayer();
     delete p;
     return true;
@@ -80,7 +78,9 @@ bool PlayersManager::replaceGroup(int groupId, int replacementId) {
         return false;
     }
     *repGroup << group;
+
     delete group;
+    std::cout << "a1" << std::endl;
     assert(groups->remove(groupId));
     assert(nonEmptyGroups->remove(groupId));
     return true;
@@ -98,7 +98,7 @@ bool PlayersManager::increaseLevel(int playerId, int lvlIncrease) {
     playersByLvl->insert(p->getRankVec(), p);
     g->addPlayer(p);
     g->updateHighestPlayer();
-    highest = playersByLvl->getMax();
+    updateHighestPlayer();
     return true;
 }
 
