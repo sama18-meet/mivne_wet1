@@ -26,7 +26,7 @@ void PlayersManager::print() {
 }
 
 bool PlayersManager::addGroup(int groupId) {
-   assert(groupId > 0);
+    assert(groupId > 0);
     if (groups->get(groupId, nullptr) == nullptr) {
         Group* g = new Group(groupId);
         bool success = groups->insert(groupId, g);
@@ -80,9 +80,11 @@ bool PlayersManager::replaceGroup(int groupId, int replacementId) {
     *repGroup << group;
 
     delete group;
-    std::cout << "a1" << std::endl;
     assert(groups->remove(groupId));
     nonEmptyGroups->remove(groupId);
+    if (repGroup->getNumOfPlayers() > 0) {
+        nonEmptyGroups->insert(repGroup->getId(), repGroup);
+    }
     return true;
 }
 
@@ -152,7 +154,7 @@ bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numP
     if (groupId<0) {
         *numPlayers = playersByLvl->getSize();
         if (*numPlayers==0) {
-            playersArr = nullptr;
+            *playersArr = nullptr;
         }
         else {
             *playersArr = new int[*numPlayers];
@@ -166,7 +168,7 @@ bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numP
         }
         *numPlayers = g->getNumOfPlayers();
         if (*numPlayers==0) {
-            playersArr = nullptr;
+            *playersArr = nullptr;
         }
         else {
             *playersArr = new int[*numPlayers];
