@@ -83,6 +83,7 @@ AVL<K, T>::AVL() :root(nullptr), size(0) {}
 template <class K, class T>
 AVL<K, T>::~AVL() {
     deleteSubtree(root);
+
 }
 
 template <class K, class T>

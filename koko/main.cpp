@@ -85,16 +85,16 @@ int main() {
     int highest;
 
     pm->getHighestLvl(2, &highest);
-    std::cout << "highest in 2 is: " << highest << std::endl;
 
     pm->increaseLevel(1, 1000);
     //pm->print();
-    std::cout << "highest should be 1 in both " << std::endl;
     pm->getHighestLvl(2, &highest);
-    std::cout << "highest in 2 is: " << highest << std::endl;
     pm->getHighestLvl(-1, &highest);
-    std::cout << "highest in all is: " << highest << std::endl;
     pm->print();
+    int** arr;
+    int* numPlayers;
+
+
 
     /*
      * empty set

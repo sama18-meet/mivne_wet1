@@ -25,3 +25,9 @@ StatusType AddGroup(void *DS, int GroupID) {
     }
     return success ? SUCCESS : FAILURE;
 }
+
+
+void Quit(void** DS) {
+    PlayersManager* pm = (PlayersManager*)DS;
+    delete pm;
+}
