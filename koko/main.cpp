@@ -82,15 +82,19 @@ int main() {
     pm->addPlayer(4, 2, 440);
     pm->addPlayer(5, 2, 550);
     //pm->print();
+    int highest;
+
+    pm->getHighestLvl(2, &highest);
+    std::cout << "highest in 2 is: " << highest << std::endl;
 
     pm->increaseLevel(1, 1000);
     //pm->print();
-    int highest;
     std::cout << "highest should be 1 in both " << std::endl;
     pm->getHighestLvl(2, &highest);
     std::cout << "highest in 2 is: " << highest << std::endl;
     pm->getHighestLvl(-1, &highest);
     std::cout << "highest in all is: " << highest << std::endl;
+    pm->print();
 
     /*
      * empty set

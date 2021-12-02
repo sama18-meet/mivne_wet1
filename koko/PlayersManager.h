@@ -8,7 +8,7 @@ class PlayersManager {
 private:
     AVL<int, Group*>* groups;
     AVL<int, Group*>* nonEmptyGroups;
-    AVL<const Vec2D*, Player*>* playersByLvl;
+    AVL<Vec2D, Player*>* playersByLvl;
     AVL<int, Player*>* playersById;
     Player* highest;
 

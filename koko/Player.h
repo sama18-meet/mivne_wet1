@@ -19,7 +19,7 @@ public:
     void setGroup(Group* new_group);
     static void setGroupStatic(Group* new_group, Player* p, int redundant);
     void increaseLvl(int inc);
-    const Vec2D* getRankVec() const;
+    Vec2D getRankVec() const;
 };
 
 

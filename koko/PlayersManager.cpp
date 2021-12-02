@@ -4,7 +4,7 @@
 PlayersManager::PlayersManager() : highest(nullptr) {
     groups = new AVL<int, Group*>();
     nonEmptyGroups = new AVL<int, Group*>();
-    playersByLvl = new AVL<const Vec2D*, Player*>();
+    playersByLvl = new AVL<Vec2D, Player*>();
     playersById = new AVL<int, Player*>();
 }
 
@@ -82,7 +82,7 @@ bool PlayersManager::replaceGroup(int groupId, int replacementId) {
     delete group;
     std::cout << "a1" << std::endl;
     assert(groups->remove(groupId));
-    assert(nonEmptyGroups->remove(groupId));
+    nonEmptyGroups->remove(groupId);
     return true;
 }
 
@@ -124,11 +124,13 @@ void PlayersManager::insertHighestPlayerIdInArray(int* arr, Group* g, int idx) {
     arr[idx] = p->getId();
 }
 
-bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArr) {
+bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
     if (numGroups > nonEmptyGroups->getSize()) {
         return false;
     }
-    nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, *playersArr, numGroups);
+    int* playersArr = new int[numGroups];
+    nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, playersArr, numGroups);
+    *playersArrPtr = playersArr;
     return true;
 }
 

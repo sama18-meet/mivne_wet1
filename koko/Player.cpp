@@ -31,6 +31,6 @@ void Player::increaseLvl(int inc) {
     rankVec.updateX(this->lvl);
 }
 
-const Vec2D* Player::getRankVec() const {
-    return &(this->rankVec);
+Vec2D Player::getRankVec() const {
+    return this->rankVec;
 }

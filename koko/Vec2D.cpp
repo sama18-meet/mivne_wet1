@@ -1,5 +1,6 @@
 #include "Vec2D.h"
-
+#include <iostream>
+using namespace std;
 
 Vec2D::Vec2D(int x, int y) : x(x), y(y) {}
 
@@ -30,3 +31,6 @@ void Vec2D::updateY(int new_y) {
     this->y = new_y;
 }
 
+void Vec2D::print() const {
+    std::cout << "(" << this->x << ", " << this->y << ")\n";
+}

@@ -2,7 +2,7 @@
 #include "Player.h"
 
 Group::Group(int id) : id(id), highest(nullptr) {
-    players = new AVL<const Vec2D*, Player*>();
+    players = new AVL<Vec2D, Player*>();
 }
 
 int Group::getId() const {
@@ -10,7 +10,7 @@ int Group::getId() const {
 }
 
 bool Group::addPlayer(Player* new_player) {
-    const Vec2D* rank = new_player->getRankVec();
+    Vec2D rank = new_player->getRankVec();
     bool success = players->insert(rank, new_player);
     new_player->setGroup(this);
     updateHighestPlayer();
@@ -24,7 +24,7 @@ bool Group::removePlayer(Player* player) {
 }
 
 void Group::operator<<(Group* replacementGroup) {
-    AVL<const Vec2D*, Player*>* new_players = new AVL<const Vec2D*, Player*>(this->players, replacementGroup->players); //merge
+    AVL<Vec2D, Player*>* new_players = new AVL<Vec2D, Player*>(this->players, replacementGroup->players); //merge
     delete this->players;
     players = new_players;
     players->applyInorder(Player::setGroupStatic, this, -1);

@@ -8,7 +8,7 @@ class Vec2D;
 class Group {
 private:
     int id;
-    AVL<const Vec2D*, Player*>* players;
+    AVL<Vec2D, Player*>* players;
     Player* highest;
 public:
     Group(int id);

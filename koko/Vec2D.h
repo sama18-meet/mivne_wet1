@@ -8,6 +8,7 @@ private:
     int y;
 public:
     Vec2D(int x, int y);
+    Vec2D() = default;
     ~Vec2D() = default;
     Vec2D(const Vec2D&) = default;
     Vec2D& operator=(const Vec2D&) = default;
@@ -18,6 +19,7 @@ public:
     bool operator<=(const Vec2D& v) const;
     void updateX(int new_x);
     void updateY(int new_y);
+    void print() const;
 };
 
 
