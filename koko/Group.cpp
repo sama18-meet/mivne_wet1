@@ -41,7 +41,6 @@ void Group::print(int i, Group* g, int j) {
     if (g==nullptr) {
         return;
     }
-    std::cout << "Printing group.. id: " << g->id << ". players: " << std::endl;
     g->players->printBT();
 }
 
