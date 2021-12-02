@@ -43,9 +43,11 @@ bool PlayersManager::removePlayer(int playerId) {
     }
     p->getGroup()->removePlayer(p); // remove player from Players tree in his group
     p->getGroup()->updateHighestPlayer();
-    nonEmptyGroups->remove(p->getId());
     playersById->remove(p->getId());
     playersByLvl->remove(p->getRankVec());
+    if (p->getGroup()->getNumOfPlayers()==0) { //if group is now empty
+        nonEmptyGroups->remove(p->getGroup()->getId());
+    }
     updateHighestPlayer();
     delete p;
     return true;
