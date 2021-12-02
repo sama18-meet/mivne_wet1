@@ -328,18 +328,21 @@ typename AVL<K,T>::Node* AVL<K,T>::removeFromSubtree(Node* node, K key, bool* su
         if (node->right == nullptr && node->left == nullptr) {
             delete node;
             *success = true;
+            size = size - 1;
             return nullptr;
         }
         else if (node->right == nullptr && node->left != nullptr) {
             Node* new_node = node->left;
             delete node;
             *success = true;
+            size = size - 1;
             return new_node;
         }
         else if (node->right != nullptr && node->left == nullptr) {
             Node* new_node = node->right;
             delete node;
             *success = true;
+            size = size - 1;
             return new_node;
         }
         else { //node has two sons
@@ -525,14 +528,14 @@ void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft)
     {
         std::cout << prefix;
 
-        std::cout << (isLeft ? "├──" : "└──" );
+        std::cout << (isLeft ? "|--" : "^--" );
 
         // print the value of the node
         std::cout << node->data->getId() << std::endl;
 
         // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
+        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
     }
 }
 
