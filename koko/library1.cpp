@@ -122,3 +122,8 @@ StatusType GetGroupsHighestLevel(void *DS, int numOfGroups, int **Players) {
         return ALLOCATION_ERROR;
     }
 }
+
+void Quit(void** DS) {
+    PlayersManager* pm = (PlayersManager*)DS;
+    delete pm;
+}
