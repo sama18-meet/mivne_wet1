@@ -174,6 +174,7 @@ static errorType parser(const char* const command) {
             break;
         case (GETALLPLAYERS_CMD):
             rtn_val = OnGetAllPlayersByLevel(DS, command_args);
+            cout << "passed successfully 2" << endl;
             break;
         case (GETGROUPSHIGHEST_CMD):
             rtn_val = OnGetGroupsHighestLevel(DS, command_args);
@@ -340,7 +341,7 @@ void PrintAll(int *playerIDs, int numOfPlayers) {
     for (int i = 0; i < numOfPlayers; i++) {
         cout << i + 1 << "\t||\t" << playerIDs[i] << endl;
     }
-    cout << "and there are no more players!" << endl;
+    cout << "Finished printing getAllPlayersByLvl! and there are no more players!" << endl;
 
     free (playerIDs);
 }
@@ -359,6 +360,7 @@ static errorType OnGetAllPlayersByLevel(void* DS, const char* const command) {
     }
 
     PrintAll(playerIDs, numOfPlayers);
+    cout << "passed successfully" << endl;
     return error_free;
 }
 
@@ -374,9 +376,9 @@ void PrintGroupsHighest(int *playerIDs, int numOfGroups) {
     for (int i = 0; i < numOfGroups; i++) {
         cout << i + 1 << "\t||\t" << playerIDs[i] << endl;
     }
-    cout << "and there are no more players!" << endl;
+    cout << "Finished printing getGroupsHighestLvl! and there are no more players!" << endl;
 
-    free (playerIDs);
+    //free (playerIDs);
 }
 
 static errorType OnGetGroupsHighestLevel(void* DS, const char* const command) {

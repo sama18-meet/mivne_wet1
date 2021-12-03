@@ -130,8 +130,9 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
     if (numGroups > nonEmptyGroups->getSize()) {
         return false;
     }
-    int* playersArr = (int *) malloc(sizeof(int)*numGroups);
+    int* playersArr = (int*)malloc(sizeof(int)*(numGroups));
     if (playersArr == nullptr) {
+        *playersArrPtr = nullptr;
         throw std::bad_alloc();
     }
     nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, playersArr, numGroups);
@@ -154,13 +155,20 @@ void PlayersManager::insertPlayerIdInArray(int* arr, Player* p, int idx) {
 }
 
 bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers) {
+    assert(groupId != 0);
     if (groupId<0) {
         *numPlayers = playersByLvl->getSize();
         if (*numPlayers==0) {
             *playersArr = nullptr;
+            return true;
         }
         else {
-            *playersArr = new int[*numPlayers];
+            int* arr = (int*)malloc(sizeof(int)*(*numPlayers));
+            if (arr == nullptr) {
+                *playersArr = nullptr;
+                throw std::bad_alloc();
+            }
+            *playersArr = arr;
             playersByLvl->applyInorder(PlayersManager::insertPlayerIdInArray, *playersArr, ALL_NODES);
         }
     }
@@ -174,11 +182,16 @@ bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numP
             *playersArr = nullptr;
         }
         else {
-            *playersArr = new int[*numPlayers];
+            int* arr = (int*)malloc(sizeof(int)*(*numPlayers));
+            if (arr == nullptr) {
+                *playersArr = nullptr;
+                throw std::bad_alloc();
+            }
+            *playersArr = arr;
             g->applyInorderPlayers(PlayersManager::insertPlayerIdInArray, *playersArr);
         }
     }
-    if (*numPlayers > 0) {
+    if (*numPlayers > 1) {
         reverseArray(*playersArr, *numPlayers);
     }
     return true;
