@@ -9,6 +9,17 @@ PlayersManager::PlayersManager() : highest(nullptr) {
 }
 
 
+PlayersManager::~PlayersManager() {
+    playersById->applyInorder(Player::deletePlayer, 0, ALL_NODES);
+    groups->applyInorder(Group::deleteGroup, 0, ALL_NODES);
+    delete groups;
+    delete nonEmptyGroups;
+    delete playersById;
+    delete playersByLvl;
+}
+
+
+
 void PlayersManager::print() {
     std::cout << "Printing players manager details:" << std::endl;
     std::cout << "groups: " << "\n";
@@ -21,7 +32,7 @@ void PlayersManager::print() {
     playersById->printBT();
     std::cout << "highest: " << highest->getId() << std::endl;
     std::cout << "groups: " << std::endl;
-    groups->applyInorder(Group::print, 1, -1);
+    groups->applyInorder(Group::print, 1, ALL_NODES);
     std::cout << "______________________________________________________" << std::endl;
 }
 
@@ -75,15 +86,15 @@ bool PlayersManager::addPlayer(int playerId, int groupId, int lvl) {
 }
 
 bool PlayersManager::replaceGroup(int groupId, int replacementId) {
-    Group* group = groups->get(groupId, nullptr);
+    Group* groupToBeDeleted = groups->get(groupId, nullptr);
     Group* repGroup = groups->get(replacementId, nullptr);
-    if (group == nullptr || repGroup == nullptr) {
+    if (groupToBeDeleted == nullptr || repGroup == nullptr) {
         return false;
     }
-    *repGroup << group;
+    repGroup->insertAllPlayersOf(groupToBeDeleted);
 
-    delete group;
-    assert(groups->remove(groupId));
+    delete groupToBeDeleted;
+    groups->remove(groupId);
     nonEmptyGroups->remove(groupId);
     if (repGroup->getNumOfPlayers() > 0) {
         nonEmptyGroups->insert(repGroup->getId(), repGroup);

@@ -3,7 +3,7 @@
 
 void* Init() {
     try {
-        auto *DS = new PlayersManager();
+        PlayersManager *DS = new PlayersManager();
         return (void*)DS;
     }
     catch (std::bad_alloc&) {

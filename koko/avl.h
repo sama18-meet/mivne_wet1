@@ -43,7 +43,7 @@ private:
     template <class function, class param>
     void applyInorderOnKeyInternal(Node* node, function func, param p, int* done_nodes, int num_nodes);
     static void mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* keys2, T* data, K* keysMerged, T* dataMerged);
-    Node* buildAVLInternalFromArr(int size, K* keyArr, T* dataArr);
+    Node* buildAVLInternalFromArr(int n, K* keyArr, T* dataArr);
     template <class arrType>
     static void insertInArray(arrType* arr, arrType element, int index);
     void deleteSubtree(Node*);
@@ -424,12 +424,12 @@ void AVL<K, T>::applyInorderOnKeyInternal(Node* node, function func, param p, in
 
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int size, K* keyArr, T* dataArr) {
-    if (size <= 0) {
+typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int tree_size, K* keyArr, T* dataArr) {
+    if (tree_size <= 0) {
         return nullptr;
     }
-    int full_rows = log2(size+1); // rounds down
-    int remainder = size + 1 - pow(2,full_rows); // number of nodes in last row
+    int full_rows = log2(tree_size+1); // rounds down
+    int remainder = tree_size + 1 - pow(2,full_rows); // number of nodes in last row
     int r1, r2; //
     int last_row_size = pow(2,full_rows);
     if (remainder <= last_row_size/2) {
@@ -443,7 +443,6 @@ typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int size, K* keyArr, 
     }
     int left_size = pow(2,(full_rows-1)) - 1 + r1;
     int right_size = pow(2,(full_rows-1)) - 1 + r2;
-    //std::cout << "size: " << size << ". full_rows: " <<full_rows << ". r1: " << r1 << ". r2: " << r2<< ". left_size: " << left_size << ". right_size: " << right_size << std::endl;
     K* leftKeyArr = keyArr;
     T* leftDataArr = dataArr;
     K* rightKeyArr = keyArr+left_size + 1;
@@ -523,8 +522,7 @@ AVL<K,T>::AVL(AVL<K,T>* avl1, AVL<K,T>* avl2) {
     K* keysMerged = new K[n1+n2];
     mergeSortedArrays(n1, n2, keyArray1, dataArray1, keyArray2, dataArray2, keysMerged, dataMerged);
 
-
-    size = n1+n2;
+    this->size = n1+n2;
     root = buildAVLInternalFromArr(size, keysMerged, dataMerged);
     delete[] dataArray1;
     delete[] dataArray2;

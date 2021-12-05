@@ -20,7 +20,7 @@ private:
 
 public:
     PlayersManager();
-    ~PlayersManager() = default;
+    ~PlayersManager();
     PlayersManager(const PlayersManager&) = delete;
     PlayersManager& operator=(const PlayersManager&) = delete;
     bool addGroup(int groupId); // false if groupId already exists

@@ -20,6 +20,7 @@ public:
     static void setGroupStatic(Group* new_group, Player* p, int redundant);
     void increaseLvl(int inc);
     Vec2D getRankVec() const;
+    static void deletePlayer(int redundant1, Player* playerToDelete, int redundant2);
 };
 
 

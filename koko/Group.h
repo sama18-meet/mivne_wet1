@@ -12,19 +12,20 @@ private:
     Player* highest;
 public:
     Group(int id);
-    ~Group() = default;
+    ~Group();
     Group(const Group&) = delete;
     Group& operator=(const Group&) = delete;
     int getId() const;
     bool addPlayer(Player*);
     bool removePlayer(Player*);
-    void operator<<(Group*); // eat
+    void insertAllPlayersOf(Group*); // eat
     Player* getHighest() const;
     static void print(int, Group*, int);
     void updateHighestPlayer();
     int getNumOfPlayers() const;
     template <class function, class param>
     void applyInorderPlayers(function func, param p);
+    static void deleteGroup(int redundant1, Group* groupToDelete, int redundant2);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

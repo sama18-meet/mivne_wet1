@@ -34,3 +34,7 @@ void Player::increaseLvl(int inc) {
 Vec2D Player::getRankVec() const {
     return this->rankVec;
 }
+
+void Player::deletePlayer(int redundant1, Player* playerToDelete, int redundant2) {
+    delete playerToDelete;
+}
