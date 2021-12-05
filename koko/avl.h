@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <cmath>
-#include <assert.h>
 
 #define ALL_NODES -1
 
@@ -172,7 +171,6 @@ typename AVL<K,T>::Node* AVL<K,T>::RR(Node* C) {
 
 template <class K, class T>
 typename AVL<K,T>::Node* AVL<K,T>::fixBalance(Node* node) {
-    assert(node != nullptr);
     int bf_node = getBf(node);
     int bf_right = getBf(node->right);
     int bf_left = getBf(node->left);
@@ -431,7 +429,6 @@ typename AVL<K,T>::Node* AVL<K,T>::buildAVLFromArray(int tree_size, K* keyArr, T
         r2 = 0;
     }
     else {
-        assert(remainder < last_row_size);
         r1 = last_row_size/2;
         r2 = remainder - r1;
     }
@@ -472,7 +469,6 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
     int curr2 = 0;
     int currI = 0;
     while (curr1 < size1 && curr2 < size2) {
-        assert(currI < size1 + size2);
         if (keys1[curr1] < keys2[curr2]) {
             keysMerged[currI] = keys1[curr1];
             dataMerged[currI] = data1[curr1];
