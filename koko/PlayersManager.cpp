@@ -133,7 +133,6 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
     if (numGroups > nonEmptyGroups->getSize()) {
         return false;
     }
-    std::cout << "Calling getGroupsHighestLvl. nonEmptyGroupsSize is: " << nonEmptyGroups->getSize();
     int* playersArr = (int*)malloc(sizeof(int)*(numGroups));
     if (playersArr == nullptr) {
         *playersArrPtr = nullptr;
