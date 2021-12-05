@@ -395,12 +395,14 @@ void AVL<K, T>::applyInorderOnKey(function func, param p, int num_nodes) {
 template <class K, class T>
 template <class function, class param>
 void AVL<K, T>::applyInorderInternal(Node* node, function func, param p, int* done_nodes, int num_nodes) {
-    if (node == nullptr || (num_nodes!=ALL_NODES && *done_nodes > num_nodes)) {
+    if (node == nullptr) {
         return;
     }
     applyInorderInternal(node->left, func, p, done_nodes, num_nodes);
-    func(p, node->data, *done_nodes);
-    (*done_nodes)++;
+    if (num_nodes == ALL_NODES || *done_nodes < num_nodes) {
+        func(p, node->data, *done_nodes);
+        (*done_nodes)++;
+    }
     applyInorderInternal(node->right, func, p, done_nodes, num_nodes);
 }
 
