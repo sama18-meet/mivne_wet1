@@ -8,7 +8,6 @@ PlayersManager::PlayersManager() : highest(nullptr) {
     playersById = new AVL<int, Player*>();
 }
 
-
 PlayersManager::~PlayersManager() {
     playersById->applyInorder(Player::deletePlayer, 0, ALL_NODES);
     groups->applyInorder(Group::deleteGroup, 0, ALL_NODES);
@@ -18,33 +17,29 @@ PlayersManager::~PlayersManager() {
     delete playersByLvl;
 }
 
-
-
-void PlayersManager::print() {
-    std::cout << "Printing players manager details:" << std::endl;
-    std::cout << "groups: " << "\n";
-    groups->printBT();
-    std::cout << "nonEmptyGroups: " << "\n";
-    nonEmptyGroups->printBT();
-    std::cout << "playersByLvl: " << "\n";
-    playersByLvl->printBT();
-    std::cout << "playersById: " << "\n";
-    playersById->printBT();
-    std::cout << "highest: " << highest->getId() << std::endl;
-    std::cout << "groups: " << std::endl;
-    groups->applyInorder(Group::print, 1, ALL_NODES);
-    std::cout << "______________________________________________________" << std::endl;
-}
-
 bool PlayersManager::addGroup(int groupId) {
-    assert(groupId > 0);
     if (groups->get(groupId, nullptr) == nullptr) {
         Group* g = new Group(groupId);
         bool success = groups->insert(groupId, g);
-        assert(success == true);
         return success;
     }
     return false;
+}
+
+bool PlayersManager::addPlayer(int playerId, int groupId, int lvl) {
+    Player* p = playersById->get(playerId, nullptr);
+    Group* g = groups->get(groupId, nullptr);
+    if (p != nullptr || g == nullptr) {
+        return false;
+    }
+    p = new Player(playerId, lvl);
+    g->addPlayer(p);
+    playersById->insert(playerId, p);
+    playersByLvl->insert(p->getRankVec(), p);
+    nonEmptyGroups->insert(groupId, g);
+    highest = playersByLvl->getMax();
+    g->updateHighestPlayer();
+    return true;
 }
 
 bool PlayersManager::removePlayer(int playerId) {
@@ -62,26 +57,6 @@ bool PlayersManager::removePlayer(int playerId) {
     playersByLvl->remove(p->getRankVec());
     updateHighestPlayer();
     delete p;
-    return true;
-}
-
-void PlayersManager::updateHighestPlayer() {
-    highest = playersByLvl->getMax();
-}
-
-bool PlayersManager::addPlayer(int playerId, int groupId, int lvl) {
-    Player* p = playersById->get(playerId, nullptr);
-    Group* g = groups->get(groupId, nullptr);
-    if (p != nullptr || g == nullptr) {
-        return false;
-    }
-    p = new Player(playerId, lvl);
-    g->addPlayer(p);
-    playersById->insert(playerId, p);
-    playersByLvl->insert(p->getRankVec(), p);
-    nonEmptyGroups->insert(groupId, g);
-    highest = playersByLvl->getMax();
-    g->updateHighestPlayer();
     return true;
 }
 
@@ -135,41 +110,7 @@ bool PlayersManager::getHighestLvl(int groupId, int* playerId) {
     }
 }
 
-void PlayersManager::insertHighestPlayerIdInArray(int* arr, Group* g, int idx) {
-    Player* p = g->getHighest();
-    arr[idx] = p->getId();
-}
-
-bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
-    if (numGroups > nonEmptyGroups->getSize()) {
-        return false;
-    }
-    int* playersArr = (int*)malloc(sizeof(int)*(numGroups));
-    if (playersArr == nullptr) {
-        *playersArrPtr = nullptr;
-        throw std::bad_alloc();
-    }
-    nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, playersArr, numGroups);
-    *playersArrPtr = playersArr;
-    return true;
-}
-
-void PlayersManager::reverseArray(int *playersArr, int size) {
-    if (size==0) {return;}
-    int switch_var;
-    for (int i = 0; i < size/2; i++) {
-        switch_var = *(playersArr+i);
-        *(playersArr+i) = *(playersArr+size-i-1);
-        *(playersArr+size-i-1) = switch_var;
-    }
-}
-
-void PlayersManager::insertPlayerIdInArray(int* arr, Player* p, int idx) {
-    arr[idx] = p->getId();
-}
-
 bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers) {
-    assert(groupId != 0);
     if (groupId<0) {
         *numPlayers = playersByLvl->getSize();
         if (*numPlayers==0) {
@@ -209,4 +150,45 @@ bool PlayersManager::getAllPlayersByLvl(int groupId, int** playersArr, int* numP
         reverseArray(*playersArr, *numPlayers);
     }
     return true;
+}
+
+bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
+    if (numGroups > nonEmptyGroups->getSize()) {
+        return false;
+    }
+    int* playersArr = (int*)malloc(sizeof(int)*(numGroups));
+    if (playersArr == nullptr) {
+        *playersArrPtr = nullptr;
+        throw std::bad_alloc();
+    }
+    nonEmptyGroups->applyInorder(PlayersManager::insertHighestPlayerIdInArray, playersArr, numGroups);
+    *playersArrPtr = playersArr;
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////  Private Methods /////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void PlayersManager::updateHighestPlayer() {
+    highest = playersByLvl->getMax();
+}
+
+void PlayersManager::insertHighestPlayerIdInArray(int* arr, Group* g, int idx) {
+    Player* p = g->getHighest();
+    arr[idx] = p->getId();
+}
+
+void PlayersManager::reverseArray(int *playersArr, int size) {
+    if (size==0) {return;}
+    int switch_var;
+    for (int i = 0; i < size/2; i++) {
+        switch_var = *(playersArr+i);
+        *(playersArr+i) = *(playersArr+size-i-1);
+        *(playersArr+size-i-1) = switch_var;
+    }
+}
+
+void PlayersManager::insertPlayerIdInArray(int* arr, Player* p, int idx) {
+    arr[idx] = p->getId();
 }

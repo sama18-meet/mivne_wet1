@@ -30,7 +30,3 @@ void Vec2D::updateX(int new_x) {
 void Vec2D::updateY(int new_y) {
     this->y = new_y;
 }
-
-void Vec2D::print() const {
-    std::cout << "(" << this->x << ", " << this->y << ")\n";
-}

@@ -23,7 +23,7 @@ public:
     ~PlayersManager();
     PlayersManager(const PlayersManager&) = delete;
     PlayersManager& operator=(const PlayersManager&) = delete;
-    bool addGroup(int groupId); // false if groupId already exists
+    bool addGroup(int groupId);
     bool addPlayer(int playerId, int groupId, int lvl);
     bool removePlayer(int playerId);
     bool replaceGroup(int groupId, int replacementId);
@@ -31,7 +31,6 @@ public:
     bool getHighestLvl(int groupId, int* playerId);
     bool getAllPlayersByLvl(int groupId, int** playersArr, int* numPlayers);
     bool getGroupsHighestLvl(int numGroups, int** playersArr);
-    void print();
 };
 
 

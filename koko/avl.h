@@ -43,11 +43,10 @@ private:
     template <class function, class param>
     void applyInorderOnKeyInternal(Node* node, function func, param p, int* done_nodes, int num_nodes);
     static void mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* keys2, T* data, K* keysMerged, T* dataMerged);
-    Node* buildAVLInternalFromArr(int n, K* keyArr, T* dataArr);
+    Node* buildAVLFromArray(int n, K* keyArr, T* dataArr);
     template <class arrType>
     static void insertInArray(arrType* arr, arrType element, int index);
     void deleteSubtree(Node*);
-    void printBT(const std::string& prefix, const Node* node, bool isLeft) const;
     Node* getNextInInorder(Node* node);
     Node* getSmallestDescendant(Node* node);
     Node* getMaxInSubtree(Node* root) const;
@@ -69,7 +68,6 @@ public:
     void applyInorder(function func, param p, int num_nodes);
     int getSize() const;
     T getMax() const;
-    void printBT() const;
 };
 
 
@@ -108,7 +106,6 @@ int AVL<K, T>::getHeight(Node* node) const {
     return (node->height);
 }
 
-
 template <class K, class T>
 void AVL<K, T>::updateHeight(Node* node) {
     if (node == nullptr) {
@@ -137,8 +134,7 @@ typename AVL<K,T>::Node* AVL<K,T>::rollRight(Node* B) {
     B->left = A->right;
     A->right = B;
     updateHeight(B);
-    updateHeight(A); //not needed
-    //B->height = getHeight(B) - 2; //decreases by 2 after roll
+    updateHeight(A);
     return A;
 }
 
@@ -147,8 +143,8 @@ typename AVL<K,T>::Node* AVL<K,T>::rollLeft(Node* A) {
     Node* B = A->right;
     A->right = B->left;
     B->left = A;
-    updateHeight(A); //decreases by 2 after roll
-    updateHeight(B); //not needed
+    updateHeight(A);
+    updateHeight(B);
     return B;
 }
 
@@ -198,14 +194,12 @@ typename AVL<K,T>::Node* AVL<K,T>::fixBalance(Node* node) {
     }
 }
 
-
 template <class K, class T>
 bool AVL<K,T>::insert(const K& key, T data) {
     bool success = true;
     root = insertInSubtree(root, key, data, &success);
     return success;
 }
-
 
 template <class K, class T>
 // insert node into subtree and return the head of the subtree after insertion
@@ -294,7 +288,7 @@ bool AVL<K,T>::remove(K key) {
 
 template <class K, class T>
 typename AVL<K,T>::Node* AVL<K,T>::getSmallestDescendant(Node* node) {
-    if (node->left == nullptr) { //arrived at smallest son
+    if (node->left == nullptr) {
         return node;
     }
     else {
@@ -309,8 +303,8 @@ typename AVL<K,T>::Node* AVL<K,T>::getNextInInorder(Node* node) {
 }
 
 template <class K, class T>
+//switches between key and dat of node and new_node
 void AVL<K,T>:: switchNodes(Node* node, Node* new_node) {
-    //switches between key and dat of node and new_node
     K node_key = node->key;
     T node_data = node->data;
     node->key = new_node->key;
@@ -424,7 +418,7 @@ void AVL<K, T>::applyInorderOnKeyInternal(Node* node, function func, param p, in
 
 
 template <class K, class T>
-typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int tree_size, K* keyArr, T* dataArr) {
+typename AVL<K,T>::Node* AVL<K,T>::buildAVLFromArray(int tree_size, K* keyArr, T* dataArr) {
     if (tree_size <= 0) {
         return nullptr;
     }
@@ -450,8 +444,8 @@ typename AVL<K,T>::Node* AVL<K,T>::buildAVLInternalFromArr(int tree_size, K* key
     K currentKey = keyArr[left_size];
     T currentData = dataArr[left_size];
     Node* n = new Node(currentKey, currentData);
-    n->left = buildAVLInternalFromArr(left_size, leftKeyArr, leftDataArr);
-    n->right = buildAVLInternalFromArr(right_size, rightKeyArr, rightDataArr);
+    n->left = buildAVLFromArray(left_size, leftKeyArr, leftDataArr);
+    n->right = buildAVLFromArray(right_size, rightKeyArr, rightDataArr);
     n->height = std::max(getHeight(n->left), getHeight(n->right)) + 1;
     return n;
 }
@@ -504,7 +498,6 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
     }
 }
 
-
 template <class K, class T>
 // notice that this method does not delete the two old avls!
 AVL<K,T>::AVL(AVL<K,T>* avl1, AVL<K,T>* avl2) {
@@ -521,9 +514,8 @@ AVL<K,T>::AVL(AVL<K,T>* avl1, AVL<K,T>* avl2) {
     T* dataMerged = new T[n1+ n2];
     K* keysMerged = new K[n1+n2];
     mergeSortedArrays(n1, n2, keyArray1, dataArray1, keyArray2, dataArray2, keysMerged, dataMerged);
-
     this->size = n1+n2;
-    root = buildAVLInternalFromArr(size, keysMerged, dataMerged);
+    root = buildAVLFromArray(size, keysMerged, dataMerged);
     delete[] dataArray1;
     delete[] dataArray2;
     delete[] keyArray1;
@@ -531,35 +523,5 @@ AVL<K,T>::AVL(AVL<K,T>* avl1, AVL<K,T>* avl2) {
     delete[] dataMerged;
     delete[] keysMerged;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////// PRINT ////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-template <class K, class T>
-void AVL<K,T>::printBT(const std::string& prefix, const Node* node, bool isLeft) const {
-    if( node != nullptr )
-    {
-        std::cout << prefix;
-
-        std::cout << (isLeft ? "|--" : "^--" );
-
-        // print the value of the node
-        if (node->data == nullptr) {
-            std::cout << "DATA IS NULLPTR IN PRINTBT" << std::endl;
-        }
-
-        std::cout << node->data->getId() << std::endl;
-
-        // enter the next tree level - left and right branch
-        printBT( prefix + (isLeft ? "|   " : "    "), node->left, true);
-        printBT( prefix + (isLeft ? "|   " : "    "), node->right, false);
-    }
-}
-
-template <class K, class T>
-void AVL<K,T>::printBT() const {
-    printBT("", root, false);
-}
-
 
 #endif // _AVL_H

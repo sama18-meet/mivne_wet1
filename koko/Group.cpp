@@ -5,7 +5,6 @@ Group::Group(int id) : id(id), highest(nullptr) {
     players = new AVL<Vec2D, Player*>();
 }
 
-
 Group::~Group() {
     delete players;
 }
@@ -34,22 +33,11 @@ void Group::insertAllPlayersOf(Group* groupToBeDeleted) {
     this->players = new_players;
     this->players->applyInorder(Player::setGroupStatic, this, ALL_NODES);
     updateHighestPlayer();
-
 }
 
 Player* Group::getHighest() const {
     return highest;
 }
-
-void Group::print(int i, Group* g, int j) {
-    if (g==nullptr) {
-        std::cout << "WARNING: attempt to print null group " << std::endl;
-        return;
-    }
-    std::cout << "Printing group.. id: " << g->id << ". players: " << std::endl;
-    g->players->printBT();
-}
-
 
 void Group::updateHighestPlayer() {
     highest = players->getMax();

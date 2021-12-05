@@ -18,9 +18,8 @@ public:
     int getId() const;
     bool addPlayer(Player*);
     bool removePlayer(Player*);
-    void insertAllPlayersOf(Group*); // eat
+    void insertAllPlayersOf(Group*);
     Player* getHighest() const;
-    static void print(int, Group*, int);
     void updateHighestPlayer();
     int getNumOfPlayers() const;
     template <class function, class param>

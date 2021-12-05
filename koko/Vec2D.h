@@ -19,7 +19,6 @@ public:
     bool operator<=(const Vec2D& v) const;
     void updateX(int new_x);
     void updateY(int new_y);
-    void print() const;
 };
 
 
