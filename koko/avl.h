@@ -478,18 +478,30 @@ void AVL<K,T>::mergeSortedArrays(int size1, int size2, K* keys1, T* data1, K* ke
     int curr1 = 0;
     int curr2 = 0;
     int currI = 0;
-    while (curr1 < size1 || curr2 < size2) {
-        if (curr2 >= size2 || keys1[curr1] <= keys2[curr2]) {
+    while (curr1 < size1 && curr2 < size2) {
+        assert(currI < size1 + size2);
+        if (keys1[curr1] < keys2[curr2]) {
             keysMerged[currI] = keys1[curr1];
             dataMerged[currI] = data1[curr1];
             curr1++;
-        }
-        else if (curr1 >= size1 || keys2[curr2] <= keys1[curr1]){
+        } else {
             keysMerged[currI] = keys2[curr2];
             dataMerged[currI] = data2[curr2];
             curr2++;
         }
         currI++;
+    }
+    while (curr1 < size1) {
+        keysMerged[currI] = keys1[curr1];
+        dataMerged[currI] = data1[curr1];
+        currI++;
+        curr1++;
+    }
+    while (curr2 < size2) {
+        keysMerged[currI] = keys2[curr2];
+        dataMerged[currI] = data2[curr2];
+        currI++;
+        curr2++;
     }
 }
 

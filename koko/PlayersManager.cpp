@@ -41,9 +41,12 @@ bool PlayersManager::removePlayer(int playerId) {
     if (p==nullptr) {
         return false;
     }
-    p->getGroup()->removePlayer(p); // remove player from Players tree in his group
-    p->getGroup()->updateHighestPlayer();
-    nonEmptyGroups->remove(p->getId());
+    Group* g = p->getGroup();
+    g->removePlayer(p);
+    g->updateHighestPlayer();
+    if (g->getNumOfPlayers() == 0) {
+        nonEmptyGroups->remove(g->getId());
+    }
     playersById->remove(p->getId());
     playersByLvl->remove(p->getRankVec());
     updateHighestPlayer();
@@ -130,6 +133,7 @@ bool PlayersManager::getGroupsHighestLvl(int numGroups, int** playersArrPtr) {
     if (numGroups > nonEmptyGroups->getSize()) {
         return false;
     }
+    std::cout << "Calling getGroupsHighestLvl. nonEmptyGroupsSize is: " << nonEmptyGroups->getSize();
     int* playersArr = (int*)malloc(sizeof(int)*(numGroups));
     if (playersArr == nullptr) {
         *playersArrPtr = nullptr;
